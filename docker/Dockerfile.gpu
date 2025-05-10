@@ -3,7 +3,9 @@
 # Base Image: Use PyTorch with CUDA 12.1 (closer to Cloud Run L4 drivers)
 # We will install torch==2.6.0 specifically for CUDA 12.1 later.
 # Check PyTorch Docker Hub for the most appropriate recent tag if needed.
-FROM pytorch/pytorch:2.3.0-cuda12.1-cudnn8-runtime 
+FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
+
+#FROM pytorch/pytorch:2.3.0-cuda12.1-cudnn8-runtime 
 # Using 2.3 as example, find suitable base
 
 # Set non-interactive frontend for apt-get
@@ -17,8 +19,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Create and switch to a non-root user
 RUN useradd --create-home --uid 1001 appuser
+
 USER appuser
-WORKDIR /home/appuser/app
+WORKDIR /app
 
 # --- Dependency Installation ---
 # Copy only the requirements file first to leverage Docker cache
