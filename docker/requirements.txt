@@ -1,0 +1,21 @@
+# FastAPI & Server Dependencies
+fastapi>=0.100.0 
+uvicorn[standard]>=0.20.0 # [standard] includes performance extras like ujson
+
+# Dependencies for firebase
+firebase-admin>=6.0.0,<7.0.0
+
+# Dependencies from nari-tts pyproject.toml (excluding torch, torchaudio, gradio, triton-windows)
+descript-audio-codec>=1.0.0
+huggingface-hub>=0.30.2
+numpy>=2.2.4
+pydantic>=2.11.3 
+safetensors>=0.5.3
+soundfile>=0.13.1
+triton==3.2.0; sys_platform == 'linux' # Use the Linux version for Cloud Run
+
+# Dependencies implicitly needed by the FastAPI code (for File/Form)
+python-multipart
+
+# Optional: If you plan to adapt voice cloning to use GCS URIs
+google-cloud-storage>=2.0.0
