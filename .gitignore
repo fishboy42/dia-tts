@@ -1,21 +1,97 @@
-# Python-generated files
+# ~/.gitignore (configured as global core.excludesfile)
+
+# --- Python ---
 __pycache__/
-*.py[oc]
+*.py[cod]
+*$py.class # For Jython
 build/
 dist/
 wheels/
-*.egg-info
+*.egg-info/
+*.egg
+*.manifest # Often from Python packaging
+*.spec     # Often from Python packaging (e.g. PyInstaller)
 
-# Virtual environments
-.venv
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+# *.env # Be cautious if you use .env for non-secret, shareable dev configs
+# Consider being more specific like .env.local, .env.*.local
+# Or rely on the project-level .gitignore for .env files.
+# The !.env.example pattern is good for project-level.
 
-.gradio
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-**/*.pth
-**/*.mp3
-!example_prompt.mp3
-**/*.txt
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+.ruff_cache/ # Added trailing slash for consistency
+.mypy_cache/
 
-.ruff_cache
-.ipynb_checkpoints
-config.json
+# --- Credentials & Secrets (Handle with care) ---
+# Prefer ignoring specific credential file names or directories in project .gitignores
+# or very specific patterns if truly global.
+credentials/ # Good general directory
+*.pem
+*.p12
+# *.json # CAUTION: Removed. Too broad for global. Add specific credential json patterns if needed.
+# Example: *service-account.json, *credentials.json
+# config.json # If this is a common local-only config name for you, keep it. Otherwise, project-level.
+
+# Environment variables (often better in project .gitignore)
+# .env* # If you keep this, ensure !.env.example is in project .gitignores
+# !.env.example # This line has no effect in a global gitignore unless .env* is also global
+
+# --- IDE / Editor ---
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.codeoss/ # VS Code OSS data
+.codeoss/*
+.local/
+.local/*
+
+# --- Operating System ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# --- Logs & Temporary Files ---
+*.log
+*.log.* # If you have logs like app.log.1, app.log.2
+*.tmp
+*.swp
+*.swo
+
+# --- Jupyter Notebook ---
+.ipynb_checkpoints/ # Added trailing slash
+
+# --- Other Project-Specific (Generally better in project .gitignore) ---
+# **/*.pth # Python path configuration files, usually okay to ignore globally
+# **/*.mp3 # If you globally want to ignore most mp3s
+# !example_prompt.mp3 # Keep if you have this specific need
+
+# --- Files you explicitly mentioned wanting to ignore ---
+# If 'config.json' is always a local, non-versioned config for you across projects:
+# config.json
+gopath/
+.config/
+.bash_history
+
+# --- Files that should NOT be globally ignored ---
+# **/*.txt # DANGEROUS - Removed
+# *.json   # DANGEROUS - Removed (unless very specific like *credentials.json)

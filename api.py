@@ -12,22 +12,101 @@ try:
 except:
     pass
 
-from fastapi import FastAPI, HTTPException, File, UploadFile, Form, BackgroundTasks
+import firebase_admin
+from firebase_admin import credentials, auth
+from fastapi import FastAPI, HTTPException, File, UploadFile, Form, BackgroundTasks, status
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import uvicorn
 import soundfile as sf
 import numpy as np
+from dotenv import load_dotenv
+
 
 from dia.model import Dia
 
+# get environment variables
+load_dotenv()
+PROJECT_ID = os.getenv("PROJECT_ID")
+
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[logging.StreamHandler()]
 )
 logger = logging.getLogger(__name__)
+
+#initialize Firebase Admin SDK
+try:
+    firebase_admin.initialize_app(options={
+        "projectId": PROJECT_ID,
+    })
+    logger.info("Firebase Admin SDK initialized successfully")
+except Exception as e:
+    logger.info("Error initializing Firebase Admin SDK: {e}. Ensure credentials are set up correctly.")
+
+# --- Firebase Authentication Dependency ---
+async def get_current_user(request: Request) -> str:
+    """
+    Dependency function to verify Firebase ID token from Authorization header.
+    Returns the user ID (uid) if valid.
+    Raises HTTPException for invalid/missing tokens.
+    """
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing Authorization header",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    parts = auth_header.split()
+    if parts[0].lower() != "bearer" or len(parts) != 2:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Authorization header format. Use 'Bearer <token>'",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    id_token = parts[1]
+    try:
+        if ENV == "local":
+            import jwt
+            decoded_token = jwt.decode(id_token, options={"verify_signature": False})
+        else: 
+            # Verify the ID token while checking if the token is revoked.
+            decoded_token = auth.verify_id_token(id_token, check_revoked=True)
+        # You can access claims like decoded_token['email'], etc. if needed
+        print(f"Authenticated user: {decoded_token['user_id']}")
+        return decoded_token['user_id']  # Return user ID
+    except auth.RevokedIdTokenError:
+            raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="ID token has been revoked.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except auth.UserDisabledError:
+            raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User account is disabled.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except auth.InvalidIdTokenError as e:
+        print(f"Token verification failed: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid ID token: {e}",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except Exception as e:
+        # Catch any other potential errors during verification
+        print(f"An unexpected error occurred during token verification: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Could not process authentication token.",
+        )
 
 @asynccontextmanager
 async def lifespan(app):
@@ -45,6 +124,7 @@ async def lifespan(app):
         model = None
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
+
 app = FastAPI(
     title="Dia TTS API",
     description="Speech generation API for Dia text-to-speech model",
@@ -106,7 +186,10 @@ async def health_check():
     return {"status": "healthy", "model": "dia-1.6b"}
 
 @app.post("/generate")
-async def generate_speech(request: TextToSpeechRequest):
+async def generate_speech(
+    request: TextToSpeechRequest,
+    user_id: str = Depends(get_current_user)
+):
     global model, last_request_time, cached_results
     
     if model is None:
@@ -175,7 +258,8 @@ async def voice_clone(
     audio_file: UploadFile = File(...),
     cfg_scale: float = Form(3.0),
     temperature: float = Form(1.3),
-    top_p: float = Form(0.95)
+    top_p: float = Form(0.95),
+    user_id: str = Depends(get_current_user)
 ):
     global model
     
@@ -294,7 +378,11 @@ def process_batch(job_id: str, texts: List[str], cfg_scale: float, temperature: 
     batch_jobs[job_id]["results"] = results
 
 @app.post("/batch")
-async def batch_generate(request: BatchRequest, background_tasks: BackgroundTasks):
+async def batch_generate(
+    request: BatchRequest, 
+    background_tasks: BackgroundTasks,
+    user_id: str = Depends(get_current_user)
+):
     job_id = f"batch_{int(time.time())}"
     
     batch_jobs[job_id] = {
@@ -316,7 +404,10 @@ async def batch_generate(request: BatchRequest, background_tasks: BackgroundTask
     return {"job_id": job_id}
 
 @app.get("/batch/{job_id}")
-async def get_batch_status(job_id: str):
+async def get_batch_status(
+    job_id: str,
+    user_id: str = Depends(get_current_user)
+):
     if job_id not in batch_jobs:
         raise HTTPException(status_code=404, detail="Job not found")
     
@@ -332,7 +423,10 @@ async def get_batch_status(job_id: str):
     return status
 
 @app.get("/batch/{job_id}/results")
-async def get_batch_results(job_id: str):
+async def get_batch_results(
+    job_id: str,
+    user_id: str = Depends(get_current_user)
+):
     if job_id not in batch_jobs:
         raise HTTPException(status_code=404, detail="Job not found")
     
@@ -344,4 +438,4 @@ async def get_batch_results(job_id: str):
     return {"results": job["results"]}
 
 if __name__ == "__main__":
-    uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=False)
+    uvicorn.run("api:app", host="0.0.0.0", port=8080, reload=False)
