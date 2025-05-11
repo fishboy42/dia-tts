@@ -37,6 +37,10 @@ RUN pip install --no-cache-dir --upgrade pip
 #     torch==2.6.0 \
 #     torchaudio==2.6.0 \
 #     --index-url https://download.pytorch.org/whl/cu121
+# RUN pip install --no-cache-dir \
+#     torch==2.5.1+cu121\
+#     torchaudio==2.5.1+cu121 \
+#     --index-url https://download.pytorch.org/whl/cu121
 
 # Install the rest of the dependencies from requirements.txt
 # IMPORTANT: Ensure requirements.txt DOES NOT list torch or torchaudio itself.
