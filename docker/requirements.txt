@@ -4,6 +4,9 @@ uvicorn[standard]>=0.20.0,<0.25.0
 
 # Dependencies for firebase
 firebase-admin>=6.0.0,<7.0.0
+google-api-core>=1.33.0,<2.0.0
+grpcio>=1.46.0,<2.0.0
+protobuf>=3.19.5,<4.0.0
 
 # Dependencies from nari-tts pyproject.toml
 descript-audio-codec>=1.0.0,<2.0.0
