@@ -11,23 +11,23 @@ certifi==2025.4.26
 cffi==1.17.1
 charset-normalizer==3.4.2
 cryptography==44.0.3
-google-api-core[grpc]==1.34.1
+#google-api-core[grpc]==1.34.1
 google-api-python-client==2.169.0
 google-auth==2.40.1
 google-auth-httplib2==0.2.0
 google-cloud-core==2.4.3
-google-cloud-firestore==2.20.2
+#cloud-firestore==2.20.2
 google-cloud-storage==2.14.0
 google-crc32c==1.7.1
 google-resumable-media==2.7.2
-googleapis-common-protos==1.63.1
+#googleapis-common-protos==1.63.1
 grpcio==1.72.0rc1
-grpcio-status==1.49.0rc1
+#grpcio-status==1.49.0rc1
 httplib2==0.22.0
 idna==3.10
 msgpack==1.1.0
-proto-plus==1.26.1
-protobuf==3.20.3
+#proto-plus==1.26.1
+#protobuf==3.20.3
 pyasn1==0.6.1
 pyasn1-modules==0.4.2
 pycparser==2.22
@@ -37,11 +37,20 @@ requests==2.32.3
 rsa==4.9.1
 uritemplate==4.1.1
 urllib3==2.4.0
+
+descript-audiotools 0.7.2 depends on protobuf<3.20 and >=3.9.2
+proto-plus 1.26.1 depends on protobuf<7.0.0 and >=3.19.0
+google-cloud-firestore 2.20.2 depends on protobuf!=3.20.0, !=3.20.1, !=4.21.0, !=4.21.1, !=4.21.2, !=4.21.3, !=4.21.4, !=4.21.5, <7.0.0dev and >=3.20.2
+grpcio-status 1.49.0rc1 depends on protobuf>=3.12.0
+google-api-core[grpc] 1.34.1 depends on protobuf!=3.20.0, !=3.20.1, !=4.21.0, !=4.21.1, !=4.21.2, !=4.21.3, !=4.21.4, !=4.21.5, <4.0.0dev and >=3.19.5
+googleapis-common-protos 1.63.1 depends on protobuf!=3.20.0, !=3.20.1, !=4.21.1, !=4.21.2, !=4.21.3, !=4.21.4, !=4.21.5, <6.0.0.dev0 and >=3.19.5
+google-api-core 1.34.1 depends on protobuf!=3.20.0, !=3.20.1, !=4.21.0, !=4.21.1, !=4.21.2, !=4.21.3, !=4.21.4, !=4.21.5, <4.0.0dev and >=3.19.5
+    
 ########################
 ########################
 
 # Dependencies from nari-tts pyproject.toml
-descript-audio-codec>=1.0.0,<2.0.0
+#descript-audio-codec>=1.0.0,<2.0.0
 huggingface-hub>=0.30.2,<0.40.0
 numpy>=2.2.4,<3.0.0
 pydantic>=2.11.3,<3.0.0
@@ -53,7 +62,7 @@ triton==3.2.0; sys_platform == 'linux'
 python-multipart
 
 # Optional: If you plan to adapt voice cloning to use GCS URIs
-google-cloud-storage>=2.0.0,<3.0.0
+#google-cloud-storage>=2.0.0,<3.0.0
 
 # PyTorch and related libraries
 torch>=2.0.0,<3.0.0
