@@ -1,24 +1,57 @@
 # FastAPI & Server Dependencies
-fastapi>=0.100.0 
-uvicorn[standard]>=0.20.0 # [standard] includes performance extras like ujson
+fastapi>=0.115.0,<0.120.0
+uvicorn[standard]>=0.20.0,<0.25.0
 
 # Dependencies for firebase
 firebase-admin>=6.0.0,<6.0.1
-grpcio==1.46.0 # grpcio 1.46.0 is the last version that supports Python 3.7
+grpcio==1.46.0
 protobuf==3.19.6
-pyjwt[crypto]==2.10.1 # pyjwt[crypto] is needed for firebase-admin
+pyjwt[crypto]==2.10.1
 
-# Dependencies from nari-tts pyproject.toml (excluding torch, torchaudio, gradio, triton-windows)
-descript-audio-codec>=1.0.0
-huggingface-hub>=0.30.2
-numpy>=2.2.4
-pydantic>=2.11.3 
-safetensors>=0.5.3
-soundfile>=0.13.1
-triton==3.2.0; sys_platform == 'linux' # Use the Linux version for Cloud Run
+# Dependencies from nari-tts pyproject.toml
+descript-audio-codec>=1.0.0,<2.0.0
+huggingface-hub>=0.30.2,<0.40.0
+numpy>=2.2.4,<3.0.0
+pydantic>=2.11.3,<3.0.0
+safetensors>=0.5.3,<1.0.0
+soundfile>=0.13.1,<1.0.0
+triton==3.2.0; sys_platform == 'linux'
 
-# Dependencies implicitly needed by the FastAPI code (for File/Form)
+# Dependencies implicitly needed by the FastAPI code
 python-multipart
 
 # Optional: If you plan to adapt voice cloning to use GCS URIs
-google-cloud-storage>=2.0.0
+#google-cloud-storage>=2.0.0,<3.0.0
+
+# PyTorch and related libraries
+torch>=2.0.0,<3.0.0
+torchaudio>=2.0.0,<3.0.0
+
+
+#######################################
+#######################################
+
+# # FastAPI & Server Dependencies
+# fastapi>=0.100.0 
+# uvicorn[standard]>=0.20.0 # [standard] includes performance extras like ujson
+
+# # Dependencies for firebase
+# firebase-admin>=6.0.0,<6.0.1
+# grpcio==1.46.0 # grpcio 1.46.0 is the last version that supports Python 3.7
+# protobuf==3.19.6
+# pyjwt[crypto]==2.10.1 # pyjwt[crypto] is needed for firebase-admin
+
+# # Dependencies from nari-tts pyproject.toml (excluding torch, torchaudio, gradio, triton-windows)
+# descript-audio-codec>=1.0.0
+# huggingface-hub>=0.30.2
+# numpy>=2.2.4
+# pydantic>=2.11.3 
+# safetensors>=0.5.3
+# soundfile>=0.13.1
+# triton==3.2.0; sys_platform == 'linux' # Use the Linux version for Cloud Run
+
+# # Dependencies implicitly needed by the FastAPI code (for File/Form)
+# python-multipart
+
+# # Optional: If you plan to adapt voice cloning to use GCS URIs
+# google-cloud-storage>=2.0.0
