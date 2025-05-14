@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN useradd --create-home --uid 1001 appuser
 
 USER appuser
-WORKDIR /
+WORKDIR /src
 
 # --- Dependency Installation ---
 # Copy only the requirements file first to leverage Docker cache
