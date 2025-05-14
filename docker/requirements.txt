@@ -3,7 +3,7 @@ fastapi>=0.115.0,<0.120.0
 uvicorn[standard]>=0.20.0,<0.25.0
 
 # Dependencies for firebase
-#firebase-admin>=6.0.0,<7.0.0
+firebase-admin>=6.0.0,<6.0.1
 # firebase-admin==6.8.0
 # cachecontrol==0.14.3
 # cachetools==5.5.2
@@ -21,17 +21,17 @@ uvicorn[standard]>=0.20.0,<0.25.0
 # google-crc32c==1.7.1
 # google-resumable-media==2.7.2
 # #googleapis-common-protos==1.63.1
-# grpcio==1.72.0rc1
+grpcio==1.46.0
 # #grpcio-status==1.49.0rc1
 # httplib2==0.22.0
 # idna==3.10
 # msgpack==1.1.0
 # #proto-plus==1.26.1
-# #protobuf<3.20.3
+protobuf==3.19.6
 # pyasn1==0.6.1
 # pyasn1-modules==0.4.2
 # pycparser==2.22
-# pyjwt[crypto]==2.10.1
+pyjwt[crypto]==2.10.1
 # pyparsing==3.2.3
 # requests==2.32.3
 # rsa==4.9.1
