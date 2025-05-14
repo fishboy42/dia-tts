@@ -49,7 +49,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
 # (Make sure your FastAPI script is named api.py or change below)
-COPY --chown=appuser:appuser ../ .
+COPY --chown=appuser:appuser . .
 # If 'dia' library code is in a subdirectory and needs to be importable:
 # COPY --chown=appuser:appuser dia/ ./dia/
 
