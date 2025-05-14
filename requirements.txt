@@ -24,7 +24,7 @@ python-multipart
 #google-cloud-storage>=2.0.0,<3.0.0
 
 # PyTorch and related libraries
-torch>=2.1.0,<3.0.0
-torchaudio>=2.1.0,<3.0.0
+#torch>=2.1.0,<3.0.0     ##commented out to avoid conflict with this installed in docker file
+#torchaudio>=2.1.0,<3.0.0 ##commented out to avoid conflict with this installed in docker file
 
 

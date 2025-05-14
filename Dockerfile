@@ -29,22 +29,9 @@ COPY --chown=appuser:appuser requirements.txt .
 
 # Upgrade pip
 RUN pip install --no-cache-dir --upgrade pip
-
-# Install torch==2.6.0 and torchaudio==2.6.0 specifically for CUDA 12.1
-# Check https://download.pytorch.org/whl/torch_stable.html for exact URLs/versions
-# Ensure this version is compatible with the Dia model's code.
-# RUN pip install --no-cache-dir \
-#     torch==2.6.0 \
-#     torchaudio==2.6.0 \
-#     --index-url https://download.pytorch.org/whl/cu121
-# RUN pip install --no-cache-dir \
-#     torch==2.5.1+cu121\
-#     torchaudio==2.5.1+cu121 \
-#     --index-url https://download.pytorch.org/whl/cu121
-
-# Install the rest of the dependencies from requirements.txt
-# IMPORTANT: Ensure requirements.txt DOES NOT list torch or torchaudio itself.
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir torch==2.1.0 torchaudio==2.1.0 -f https://download.pytorch.org/whl/torch_stable.html
+
 # --- End Dependency Installation ---
 
 # Copy the rest of the application code
