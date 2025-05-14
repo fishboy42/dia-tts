@@ -71,6 +71,7 @@ async def get_current_user(request: Request) -> str:
         )
 
     id_token = parts[1]
+    # test
     try:
         if ENV == "local":
             import jwt
