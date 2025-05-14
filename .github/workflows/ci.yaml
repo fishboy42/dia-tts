@@ -1,22 +1,51 @@
-name: Continuous Integration
-
-on:
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  lint_and_format:
-    runs-on: ubuntu-latest
-    name: Lint and Format
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3
-        with:
-          version: latest
-
-      - name: Check Lint using Ruff
-        run: ruff check
-
-      - name: Check Format using Ruff
-        run: ruff format --check --diff
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '--no-cache'
+      - '-t'
+      - >-
+        $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - '.'
+      - '-f'
+      - Dockerfile
+    id: Build
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - >-
+        $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+    id: Push
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - run
+      - services
+      - update
+      - $_SERVICE_NAME
+      - '--platform=managed'
+      - >-
+        --image=$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - >-
+        --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID
+      - '--region=$_DEPLOY_REGION'
+      - '--quiet'
+    id: Deploy
+    entrypoint: gcloud
+images:
+  - >-
+    $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+options:
+  substitutionOption: ALLOW_LOOSE
+  logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _AR_REPOSITORY: cloud-run-source-deploy
+  _AR_PROJECT_ID: podcast-twins
+  _PLATFORM: managed
+  _SERVICE_NAME: dia-tts-europe
+  _TRIGGER_ID: 610b40e1-7c40-48a6-9bee-d52f2503dcc0
+  _DEPLOY_REGION: europe-west1
+  _AR_HOSTNAME: europe-west1-docker.pkg.dev
+tags:
+  - gcp-cloud-build-deploy-cloud-run
+  - gcp-cloud-build-deploy-cloud-run-managed
+  - dia-tts-europe
