@@ -14,7 +14,7 @@ except:
 
 import firebase_admin
 from firebase_admin import credentials, auth
-from fastapi import FastAPI, HTTPException, File, UploadFile, Form, BackgroundTasks, status
+from fastapi import FastAPI, Request, HTTPException, Depends, File, UploadFile, Form, BackgroundTasks, status
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -71,7 +71,9 @@ async def get_current_user(request: Request) -> str:
         )
 
     id_token = parts[1]
-    # test
+    
+    ENV = os.getenv("ENV", "production")
+
     try:
         if ENV == "local":
             import jwt
