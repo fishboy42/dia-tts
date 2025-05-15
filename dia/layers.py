@@ -3,7 +3,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from huggingface_hub import PyTorchModelHubMixin
 from torch import Tensor
-from torch.nn import RMSNorm
+# commented out to avoid import error
+# from torch.nn import RMSNorm
+from dia.custom_layers import RMSNorm
 
 from .config import DiaConfig
 from .state import DecoderInferenceState, EncoderInferenceState, KVCache

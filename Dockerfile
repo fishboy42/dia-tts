@@ -5,9 +5,6 @@
 # Check PyTorch Docker Hub for the most appropriate recent tag if needed.
 FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
 
-#FROM pytorch/pytorch:2.3.0-cuda12.1-cudnn8-runtime 
-# Using 2.3 as example, find suitable base
-
 # Set non-interactive frontend for apt-get
 ENV DEBIAN_FRONTEND=noninteractive
 
